@@ -1,4 +1,7 @@
-﻿class SayaMusicTrack
+﻿using System;
+using System.Diagnostics;
+
+class SayaMusicTrack
 {
     private int id;
     private int playCount;
@@ -6,6 +9,9 @@
 
     public SayaMusicTrack(string title)
     {
+        Debug.Assert(title != null, "Judul tidak boleh null.");
+        Debug.Assert(title.Length <= 100, "Judul maksimal 100 karakter.");
+
         Random random = new Random();
         this.id = random.Next(1000, 10000);
         this.playCount = 0;
@@ -14,12 +20,21 @@
 
     public void IncreasePlayCount(int count)
     {
-        if(count >= 0) { 
-            playCount += count;
-        }
-        else
+  
+        Debug.Assert(count <= 10000000, "Penambahan play count maksimal 10.000.000.");
+        Debug.Assert(count >= 0, "Penambahan tidak boleh negatif.");
+
+        try
         {
-            Console.WriteLine("Play count cannot be negative or zero.");
+            checked
+            {
+                this.playCount += count;
+            }
+        }
+        catch (OverflowException ex)
+        {
+            Console.WriteLine($"[ERROR] Terjadi Overflow: {ex.Message}");
+            throw;
         }
     }
 
